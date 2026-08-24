@@ -34,7 +34,10 @@ public class JournalEntryService {
         return journalEntryRepository.findById(id);
     }
 
-    public void deleteById(ObjectId id){
+    public void deleteById(ObjectId id, String username){
+        User user = userService.findByUsername(username);
+        user.getJournalEntries().removeIf(x -> x.getId().equals(id)); //If we comment this line out and try to delete the journal entry it gets deleted in the journal_entries collection but again the reference is still in users collection BUT if we try out POST call in the postman the new entry is created and the old entry is gone and the consistency is achieved -->IMP
+        userService.saveEntry(user);
         journalEntryRepository.deleteById(id);
     }
 }

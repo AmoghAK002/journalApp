@@ -25,7 +25,7 @@ public class JournalEntryController {
     private UserService userService;
 
     @GetMapping("{username}")
-    public ResponseEntity<?> getAllJournalEntriesOfUser(@RequestParam String username) {
+    public ResponseEntity<?> getAllJournalEntriesOfUser(@PathVariable String username) {
         User user =  userService.findByUsername(username);
         List<JournalEntry> all = user.getJournalEntries();
         if (all != null && !all.isEmpty()) {
@@ -55,9 +55,9 @@ public class JournalEntryController {
         }
     }
 
-    @DeleteMapping("/id/{myId}")
-    public ResponseEntity<?> deleteJournalEntryById(@PathVariable ObjectId myId) {
-        journalEntryService.deleteById(myId);
+    @DeleteMapping("/id/{username}/{myId}")
+    public ResponseEntity<?> deleteJournalEntryById(@PathVariable ObjectId myId, @PathVariable String username) {
+        journalEntryService.deleteById(myId, username);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
