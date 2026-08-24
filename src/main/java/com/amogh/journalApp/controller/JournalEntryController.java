@@ -27,18 +27,18 @@ public class JournalEntryController {
     @GetMapping("{username}")
     public ResponseEntity<?> getAllJournalEntriesOfUser(@RequestParam String username) {
         User user =  userService.findByUsername(username);
-        List<JournalEntry> all = userService.getJournalEntries();
+        List<JournalEntry> all = user.getJournalEntries();
         if (all != null && !all.isEmpty()) {
             return new ResponseEntity<>(all, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @PostMapping
-    public ResponseEntity<JournalEntry> createEntry(@RequestBody JournalEntry myEntry) {
+    @PostMapping("{username}")
+    public ResponseEntity<JournalEntry> createEntry(@RequestBody JournalEntry myEntry, @PathVariable String username) {
         try{
             myEntry.setDate(LocalDateTime.now());
-            journalEntryService.saveEntry( myEntry );
+            journalEntryService.saveEntry( myEntry, username );
             return new ResponseEntity<>(HttpStatus.CREATED);
         }catch(Exception e){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -78,7 +78,7 @@ public class JournalEntryController {
                 oldEntry.setContent(newEntry.getContent());
             }
 
-            journalEntryService.saveEntry(oldEntry);
+            //journalEntryService.saveEntry(oldEntry, user);
             return new ResponseEntity<>(oldEntry, HttpStatus.OK);
         }
 
