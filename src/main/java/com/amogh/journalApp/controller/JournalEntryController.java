@@ -1,7 +1,9 @@
 package com.amogh.journalApp.controller;
 
 import com.amogh.journalApp.entity.JournalEntry;
+import com.amogh.journalApp.entity.User;
 import com.amogh.journalApp.service.JournalEntryService;
+import com.amogh.journalApp.service.UserService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,14 +16,18 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/journal")
-public class JournalEntryControllerV2 {
+public class JournalEntryController {
 
     @Autowired
     private JournalEntryService journalEntryService;
 
-    @GetMapping
-    public ResponseEntity<?> getAll() {
-        List<JournalEntry> all = journalEntryService.getAll();
+    @Autowired
+    private UserService userService;
+
+    @GetMapping("{username}")
+    public ResponseEntity<?> getAllJournalEntriesOfUser(@RequestParam String username) {
+        User user =  userService.findByUsername(username);
+        List<JournalEntry> all = userService.getJournalEntries();
         if (all != null && !all.isEmpty()) {
             return new ResponseEntity<>(all, HttpStatus.OK);
         }
